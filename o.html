@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECH US | Lucas Vinicius Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #030305;
+            --panel: rgba(15, 15, 22, 0.98);
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --text: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+            --grad: linear-gradient(135deg, #7000ff, #00f2ff);
+            --ml: #fff159;
+        }
+
+        [data-theme="light"] {
+            --bg: #f1f5f9;
+            --panel: #ffffff;
+            --primary: #4f46e5;
+            --secondary: #7c3aed;
+            --text: #0f172a;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; transition: all 0.3s ease; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+        /* --- AUTH --- */
+        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .auth-card { width: 420px; background: var(--panel); border: 1px solid var(--border); border-radius: 40px; padding: 40px; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.5); border: 1px solid var(--primary); }
+        .auth-card h1 { font-family: 'Space Grotesk'; font-size: 2.5rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .input-box { width: 100%; padding: 16px; border-radius: 15px; border: 1px solid var(--border); background: rgba(128,128,128,0.08); color: var(--text); font-weight: 600; margin-bottom: 12px; outline: none; }
+        .btn-auth { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--grad); color: white; font-weight: 900; cursor: pointer; font-size: 1rem; text-transform: uppercase; }
+        .auth-link { color: var(--primary); cursor: pointer; display: block; margin-top: 15px; font-weight: 700; }
+
+        /* --- DASHBOARD --- */
+        .container { width: 95%; max-width: 1400px; margin: 0 auto; padding: 30px 10px; display: none; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .logo { font-family: 'Space Grotesk'; font-size: 2.2rem; letter-spacing: -1px; }
+        .creator-tag { font-size: 0.7rem; color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+
+        .grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
+        @media(min-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 30px; padding: 25px; position: relative; overflow: hidden; }
+        .img-container { height: 250px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .img-container img { max-height: 100%; border-radius: 15px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.3)); }
+
+        .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
+        .spec-item { background: rgba(128,128,128,0.05); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
+        .spec-label { font-size: 0.55rem; color: var(--primary); font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 2px; }
+        .spec-val { font-size: 0.8rem; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .price-tag { font-size: 1.8rem; font-weight: 900; color: #00ff88; margin: 20px 0; display: block; text-align: center; }
+        
+        .shop-area { display: flex; gap: 10px; }
+        .btn-shop { flex: 1; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 0.8rem; text-align: center; color: #000; }
+        .btn-ml { background: var(--ml); }
+        .btn-amz { background: #ff9900; color: #fff; }
+
+        .footer { text-align: center; padding: 40px; margin-top: 50px; border-top: 1px solid var(--border); opacity: 0.6; font-size: 0.8rem; }
+        .hist-item { padding: 12px; background: rgba(128,128,128,0.05); border-radius: 12px; margin-bottom: 8px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div id="auth-screen">
+    <div class="auth-card" id="login-box">
+        <h1>TECH US</h1>
+        <div class="creator-tag">CRIADOR: LUCAS VINICIUS</div>
+        <div style="margin: 25px 0;">
+            <input type="text" id="user-in" class="input-box" placeholder="Usuário">
+            <input type="password" id="pass-in" class="input-box" placeholder="Senha">
+            <button class="btn-auth" onclick="handleLogin()">ENTRAR NO SISTEMA</button>
+        </div>
+        <span class="auth-link" onclick="toggleAuth(true)">CRIAR NOVO ACESSO</span>
+    </div>
+
+    <div class="auth-card" id="register-box" style="display: none;">
+        <h1>REGISTRO</h1>
+        <div class="creator-tag">MASTER: LUCAS VINICIUS</div>
+        <div style="margin: 25px 0;">
+            <input type="text" id="reg-user" class="input-box" placeholder="Definir Nome">
+            <input type="password" id="reg-pass" class="input-box" placeholder="Definir Senha">
+            <button class="btn-auth" onclick="handleRegister()">CADASTRAR EXPERT</button>
+        </div>
+        <span class="auth-link" onclick="toggleAuth(false)">VOLTAR AO LOGIN</span>
+    </div>
+</div>
+
+<div class="container" id="main-content">
+    <div class="header">
+        <div>
+            <div class="logo">TECH <span style="color: var(--primary)">US</span></div>
+            <div class="creator-tag">SISTEMA LUCAS VINICIUS</div>
+        </div>
+        <div style="display:flex; gap: 10px; align-items: center;">
+            <span id="expert-tag" style="font-weight: 800; color: var(--primary); font-size: 0.9rem;"></span>
+            <button class="btn-auth" onclick="toggleTheme()" style="padding: 10px; width: 45px;"><i class="fas fa-adjust"></i></button>
+            <button class="btn-auth" onclick="location.reload()" style="padding: 10px; width: 45px; background: #ff4757;"><i class="fas fa-power-off"></i></button>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <div class="img-container"><img id="img-a" src="https://www.svgrepo.com/show/475150/smartphone.svg"></div>
+            <input list="phone-list" id="input-a" class="input-box" placeholder="Escolha o 1º celular..." oninput="updateDevice('a', this.value)">
+            <div class="spec-grid" id="specs-a"></div>
+            <span class="price-tag" id="price-a"></span>
+            <div class="shop-area" id="shop-a" style="display:none;">
+                <a id="ml-a" target="_blank" class="btn-shop btn-ml">M. Livre</a>
+                <a id="amz-a" target="_blank" class="btn-shop btn-amz">Amazon</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container"><img id="img-b" src="https://www.svgrepo.com/show/475150/smartphone.svg"></div>
+            <input list="phone-list" id="input-b" class="input-box" placeholder="Escolha o 2º celular..." oninput="updateDevice('b', this.value)">
+            <div class="spec-grid" id="specs-b"></div>
+            <span class="price-tag" id="price-b"></span>
+            <div class="shop-area" id="shop-b" style="display:none;">
+                <a id="ml-b" target="_blank" class="btn-shop btn-ml">M. Livre</a>
+                <a id="amz-b" target="_blank" class="btn-shop btn-amz">Amazon</a>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-auth" onclick="startComparison()" style="max-width: 400px; display: block; margin: 40px auto; box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3);">🔥 ANALISAR PERFORMANCE</button>
+
+    <div class="grid">
+        <div class="card" id="chart-card" style="display: none;"><canvas id="techChart"></canvas></div>
+        <div class="card">
+            <h3 style="margin-bottom: 15px; font-family: 'Space Grotesk';">HISTÓRICO DE BUSCAS</h3>
+            <div id="history-box"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        TECH US v5.0 - DATABASE MUNDIAL <br>
+        <strong>DESENVOLVIDO POR LUCAS VINICIUS &copy; 2026</strong>
+    </div>
+</div>
+
+<datalist id="phone-list"></datalist>
+
+<script>
+const devices = {
+    // SAMSUNG
+    "Galaxy S25 Ultra": {cpu:"Snap 8 Elite", ant:"2.9M+", ip:"IP68", watts:"45W", cam:"200MP", hz:"120Hz", ram:"16GB", bat:"5500mAh", preço:"R$ 8.500", img:"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-ultra.jpg"},
+    "Galaxy S24 FE": {cpu:"Exynos 2400e", ant:"1.6M+", ip:"IP68", watts:"25W", cam:"50MP", hz:"120Hz", ram:"8GB", bat:"4700mAh", preço:"R$ 3.400", img:"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-fe.jpg"},
+    "Galaxy A55 5G": {cpu:"Exynos 1480", ant:"720k", ip:"IP67", watts:"25W", cam:"50MP", hz:"120Hz", ram:"8GB", bat:"5000mAh", preço:"R$ 1.950", img:"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-a55.jpg"},
+    "Galaxy A35": {cpu:"Exynos 1380", ant:"580k", ip:"IP67", watts:"25W", cam:"50MP", hz:"120Hz", ram:"6GB", bat:"5000mAh", preço:"R$ 1.500", img:"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-a35.jpg"},
+    "Galaxy M55": {cpu:"Snap 7 Gen 1", ant:"540k", ip:"Não", watts:"45W", cam:"50MP", hz:"120Hz", ram:"8GB", bat:"5000mAh", preço:"R$ 1.550", img:"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-m55.jpg"},
+    "Galaxy M35": {cpu:"Exynos 1380", ant:"510k", ip:"Não", watts:"25W", cam:"50MP", hz:"120Hz", ram:"6GB", bat:"6000mAh", preço:"R$ 1.300", img:"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-m35.jpg"},
+    "Galaxy A15 5G": {cpu:"Dimensity 6100+", ant:"440k", ip:"Não", watts:"25W", cam:"50MP", hz:"90Hz", ram:"4GB", bat:"5000mAh", preço:"R$ 1.050", img:"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-a15-5g.jpg"},
+    "Galaxy A05s": {cpu:"Snap 680", ant:"310k", ip:"Não", watts:"25W", cam:"50MP", hz:"90Hz", ram:"4GB", bat:"5000mAh", preço:"R$ 800", img:"https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-a05s.jpg"},
+
+    // APPLE
+    "iPhone 16 Pro Max": {cpu:"A18 Pro", ant:"2.5M+", ip:"IP68", watts:"30W", cam:"48MP", hz:"120Hz", ram:"8GB", bat:"4852mAh", preço:"R$ 9.800", img:"https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-16-pro-max.jpg"},
+    "iPhone 15": {cpu:"A16 Bionic", ant:"1.4M+", ip:"IP68", watts:"20W", cam:"48MP", hz:"60Hz", ram:"6GB", bat:"3349mAh", preço:"R$ 4.500", img:"https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15.jpg"},
+    "iPhone 13": {cpu:"A15 Bionic", ant:"1.2M+", ip:"IP68", watts:"20W", cam:"12MP", hz:"60Hz", ram:"4GB", bat:"3227mAh", preço:"R$ 3.200", img:"https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-13.jpg"},
+
+    // MOTOROLA
+    "Edge 50 Ultra": {cpu:"Snap 8s Gen 3", ant:"1.5M+", ip:"IP68", watts:"125W", cam:"50MP", hz:"144Hz", ram:"12GB", bat:"4500mAh", preço:"R$ 4.900", img:"https://fdn2.gsmarena.com/vv/bigpic/motorola-edge-50-ultra.jpg"},
+    "Edge 50 Pro": {cpu:"Snap 7 Gen 3", ant:"820k", ip:"IP68", watts:"125W", cam:"50MP", hz:"144Hz", ram:"12GB", bat:"4500mAh", preço:"R$ 3.100", img:"https://fdn2.gsmarena.com/vv/bigpic/motorola-edge-50-pro.jpg"},
+    "Moto G84": {cpu:"Snap 695", ant:"460k", ip:"IP54", watts:"33W", cam:"50MP", hz:"120Hz", ram:"8GB", bat:"5000mAh", preço:"R$ 1.350", img:"https://fdn2.gsmarena.com/vv/bigpic/motorola-moto-g84.jpg"},
+    "Moto G54": {cpu:"Dimensity 7020", ant:"470k", ip:"Não", watts:"15W", cam:"50MP", hz:"120Hz", ram:"8GB", bat:"5000mAh", preço:"R$ 1.100", img:"https://fdn2.gsmarena.com/vv/bigpic/motorola-moto-g54.jpg"},
+    "Razr 50 Ultra": {cpu:"Snap 8s Gen 3", ant:"1.2M+", ip:"IPX8", watts:"45W", cam:"50MP", hz:"165Hz", ram:"12GB", bat:"4000mAh", preço:"R$ 6.200", img:"https://fdn2.gsmarena.com/vv/bigpic/motorola-razr-50-ultra.jpg"},
+
+    // XIAOMI / POCO / REDMI
+    "Xiaomi 14 Ultra": {cpu:"Snap 8 Gen 3", ant:"2.1M+", ip:"IP68", watts:"90W", cam:"50MP Leica", hz:"120Hz", ram:"16GB", bat:"5000mAh", preço:"R$ 6.800", img:"https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14-ultra.jpg"},
+    "Poco F6 Pro": {cpu:"Snap 8 Gen 2", ant:"1.6M+", ip:"IP54", watts:"120W", cam:"50MP", hz:"120Hz", ram:"12GB", bat:"5000mAh", preço:"R$ 3.500", img:"https://fdn2.gsmarena.com/vv/bigpic/xiaomi-poco-f6-pro.jpg"},
+    "Poco X6 Pro": {cpu:"Dimensity 8300-U", ant:"1.4M+", ip:"IP54", watts:"67W", cam:"64MP", hz:"120Hz", ram:"12GB", bat:"5000mAh", preço:"R$ 2.100", img:"https://fdn2.gsmarena.com/vv/bigpic/xiaomi-poco-x6-pro.jpg"},
+    "Redmi Note 13 Pro+": {cpu:"Dimensity 7200-U", ant:"800k", ip:"IP68", watts:"120W", cam:"200MP", hz:"120Hz", ram:"12GB", bat:"5000mAh", preço:"R$ 2.400", img:"https://fdn2.gsmarena.com/vv/bigpic/xiaomi-redmi-note-13-pro-plus-5g.jpg"},
+
+    // REALME
+    "Realme GT 6": {cpu:"Snap 8s Gen 3", ant:"1.6M+", ip:"IP65", watts:"120W", cam:"50MP", hz:"120Hz", ram:"16GB", bat:"5500mAh", preço:"R$ 3.800", img:"https://fdn2.gsmarena.com/vv/bigpic/realme-gt-6.jpg"},
+    "Realme 12 Pro+": {cpu:"Snap 7s Gen 2", ant:"650k", ip:"IP65", watts:"67W", cam:"64MP Periscópio", hz:"120Hz", ram:"12GB", bat:"5000mAh", preço:"R$ 2.800", img:"https://fdn2.gsmarena.com/vv/bigpic/realme-12-pro-plus.jpg"},
+    "Realme C67": {cpu:"Snap 685", ant:"330k", ip:"IP54", watts:"33W", cam:"108MP", hz:"90Hz", ram:"8GB", bat:"5000mAh", preço:"R$ 1.150", img:"https://fdn2.gsmarena.com/vv/bigpic/realme-c67.jpg"},
+
+    // ASUS / ROG
+    "ROG Phone 8 Pro": {cpu:"Snap 8 Gen 3", ant:"2.2M+", ip:"IP68", watts:"65W", cam:"50MP", hz:"165Hz", ram:"16GB", bat:"5500mAh", preço:"R$ 8.500", img:"https://fdn2.gsmarena.com/vv/bigpic/asus-rog-phone-8.jpg"},
+    "Zenfone 10": {cpu:"Snap 8 Gen 2", ant:"1.5M+", ip:"IP68", watts:"30W", cam:"50MP Gimbal", hz:"144Hz", ram:"8GB", bat:"4300mAh", preço:"R$ 4.200", img:"https://fdn2.gsmarena.com/vv/bigpic/asus-zenfone-10.jpg"},
+
+    // GOOGLE / NOTHING
+    "Pixel 9 Pro XL": {cpu:"Tensor G4", ant:"1.3M+", ip:"IP68", watts:"37W", cam:"50MP AI", hz:"120Hz", ram:"16GB", bat:"5060mAh", preço:"R$ 7.200", img:"https://fdn2.gsmarena.com/vv/bigpic/google-pixel-9-pro-xl.jpg"},
+    "Nothing Phone (2)": {cpu:"Snap 8+ Gen 1", ant:"1.2M+", ip:"IP54", watts:"45W", cam:"50MP", hz:"120Hz", ram:"12GB", bat:"4700mAh", preço:"R$ 4.100", img:"https://fdn2.gsmarena.com/vv/bigpic/nothing-phone-2.jpg"},
+    "Nothing Phone (2a)": {cpu:"Dimensity 7200 Pro", ant:"740k", ip:"IP54", watts:"45W", cam:"50MP", hz:"120Hz", ram:"8GB", bat:"5000mAh", preço:"R$ 2.600", img:"https://fdn2.gsmarena.com/vv/bigpic/nothing-phone-2a.jpg"},
+
+    // OUTRAS (HONOR, HUAWEI, SONY, INFINIX)
+    "Infinix Note 40 Pro": {cpu:"Helio G99 Ultimate", ant:"450k", ip:"IP54", watts:"70W", cam:"108MP", hz:"120Hz", ram:"8GB", bat:"5000mAh", preço:"R$ 1.800", img:"https://fdn2.gsmarena.com/vv/bigpic/infinix-note-40-pro.jpg"},
+    "Sony Xperia 1 VI": {cpu:"Snap 8 Gen 3", ant:"2.0M+", ip:"IP68", watts:"30W", cam:"48MP Zeiss", hz:"120Hz", ram:"12GB", bat:"5000mAh", preço:"R$ 7.900", img:"https://fdn2.gsmarena.com/vv/bigpic/sony-xperia-1-vi.jpg"},
+    "Honor Magic6 Pro": {cpu:"Snap 8 Gen 3", ant:"2.1M+", ip:"IP68", watts:"80W", cam:"180MP Periscópio", hz:"120Hz", ram:"12GB", bat:"5600mAh", preço:"R$ 6.100", img:"https://fdn2.gsmarena.com/vv/bigpic/honor-magic6-pro.jpg"}
+};
+
+function toggleAuth(show) {
+    document.getElementById('login-box').style.display = show ? 'none' : 'block';
+    document.getElementById('register-box').style.display = show ? 'block' : 'none';
+}
+
+function handleRegister() {
+    const u = document.getElementById('reg-user').value;
+    const p = document.getElementById('reg-pass').value;
+    if(!u || !p) return alert("Lucas, preencha os dados!");
+    localStorage.setItem('exp_' + u, p);
+    alert("Expert Registrado!"); toggleAuth(false);
+}
+
+function handleLogin() {
+    const u = document.getElementById('user-in').value;
+    const p = document.getElementById('pass-in').value;
+    if(localStorage.getItem('exp_' + u) === p && u !== "") {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('expert-tag').innerText = "Lucas Expert: " + u;
+        loadHistory();
+    } else { alert("Acesso Inválido!"); }
+}
+
+function updateDevice(id, val) {
+    const d = devices[val];
+    if(d) {
+        document.getElementById('img-' + id).src = d.img;
+        document.getElementById('price-' + id).innerText = d.preço;
+        document.getElementById('shop-' + id).style.display = 'flex';
+        document.getElementById('ml-' + id).href = `https://lista.mercadolivre.com.br/${val}`;
+        document.getElementById('amz-' + id).href = `https://www.amazon.com.br/s?k=${val}`;
+        
+        document.getElementById('specs-' + id).innerHTML = `
+            <div class="spec-item"><span class="spec-label">Processador</span><span class="spec-val">${d.cpu}</span></div>
+            <div class="spec-item"><span class="spec-label">Resistência (IP)</span><span class="spec-val" style="color:var(--primary)">${d.ip}</span></div>
+            <div class="spec-item"><span class="spec-label">Pontuação AnTuTu</span><span class="spec-val">${d.ant}</span></div>
+            <div class="spec-item"><span class="spec-label">Carga Rápida</span><span class="spec-val">${d.watts}</span></div>
+            <div class="spec-item"><span class="spec-label">Principal / Hz</span><span class="spec-val">${d.cam} / ${d.hz}</span></div>
+            <div class="spec-item"><span class="spec-label">RAM / Bateria</span><span class="spec-val">${d.ram} / ${d.bat}</span></div>
+        `;
+    }
+}
+
+let chart;
+function startComparison() {
+    const v1 = document.getElementById('input-a').value;
+    const v2 = document.getElementById('input-b').value;
+    if(!devices[v1] || !devices[v2]) return;
+    
+    document.getElementById('chart-card').style.display = 'block';
+    if(chart) chart.destroy();
+    
+    chart = new Chart(document.getElementById('techChart'), {
+        type: 'radar',
+        data: {
+            labels: ['Poder', 'Bateria', 'Câmera', 'Tela', 'Carga'],
+            datasets: [
+                { label: v1, data: [90, 85, 95, 90, 70], borderColor: '#7000ff', backgroundColor: 'rgba(112,0,255,0.2)' },
+                { label: v2, data: [85, 95, 85, 95, 95], borderColor: '#00f2ff', backgroundColor: 'rgba(0,242,255,0.2)' }
+            ]
+        },
+        options: { 
+            scales: { r: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { display: false } } },
+            plugins: { legend: { labels: { color: '#fff' } } } 
+        }
+    });
+    saveHistory(v1, v2);
+}
+
+function saveHistory(n1, n2) {
+    let hist = JSON.parse(localStorage.getItem('tech_h') || '[]');
+    hist.unshift({ n1, n2, time: new Date().toLocaleTimeString() });
+    localStorage.setItem('tech_h', JSON.stringify(hist.slice(0, 5)));
+    loadHistory();
+}
+
+function loadHistory() {
+    let hist = JSON.parse(localStorage.getItem('tech_h') || '[]');
+    document.getElementById('history-box').innerHTML = hist.map(h => `<div class="hist-item"><span>${h.n1} vs ${h.n2}</span><small>${h.time}</small></div>`).join('');
+}
+
+function toggleTheme() {
+    const h = document.documentElement;
+    h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+const dl = document.getElementById('phone-list');
+Object.keys(devices).sort().forEach(k => {
+    let o = document.createElement('option'); o.value = k; dl.appendChild(o);
+});
+</script>
+</body>
+</html>
